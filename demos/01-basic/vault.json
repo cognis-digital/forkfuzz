@@ -1,0 +1,41 @@
+{
+  "name": "BuggyVault",
+  "state": {
+    "total": 0,
+    "alice": 0,
+    "bob": 0
+  },
+  "functions": [
+    {
+      "name": "deposit",
+      "args": [{"name": "amount", "type": "int", "min": 0, "max": 100}],
+      "guard": "amount > 0",
+      "effects": {
+        "alice": "alice + amount",
+        "total": "total + amount"
+      }
+    },
+    {
+      "name": "withdraw",
+      "args": [{"name": "amount", "type": "int", "min": 0, "max": 100}],
+      "guard": "amount > 0 and amount <= alice",
+      "effects": {
+        "alice": "alice - amount",
+        "total": "total - amount"
+      }
+    },
+    {
+      "name": "transfer",
+      "args": [{"name": "amount", "type": "int", "min": 1, "max": 100}],
+      "guard": "amount > 0",
+      "effects": {
+        "alice": "alice - amount",
+        "bob": "bob + amount"
+      }
+    }
+  ],
+  "invariants": [
+    {"name": "solvent", "expr": "total == alice + bob"},
+    {"name": "non_negative", "expr": "alice >= 0 and bob >= 0"}
+  ]
+}
