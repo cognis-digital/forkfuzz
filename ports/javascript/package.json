@@ -1,0 +1,10 @@
+{
+  "name": "@cognis/forkfuzz",
+  "version": "0.2.0",
+  "description": "JavaScript port of forkfuzz (Cognis Neural Suite)",
+  "bin": {
+    "forkfuzz": "index.js"
+  },
+  "license": "LicenseRef-COCL-1.0",
+  "type": "module"
+}
