@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: forkfuzz, labels: { app: forkfuzz } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: forkfuzz } }
+  template:
+    metadata: { labels: { app: forkfuzz } }
+    spec:
+      containers:
+        - name: forkfuzz
+          image: ghcr.io/cognis-digital/forkfuzz:latest
+          ports: [{ containerPort: 8000 }]
+          resources:
+            requests: { cpu: "50m", memory: "64Mi" }
+            limits: { cpu: "500m", memory: "256Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: forkfuzz }
+spec:
+  selector: { app: forkfuzz }
+  ports: [{ port: 80, targetPort: 8000 }]
