@@ -20,6 +20,38 @@ pip install cognis-forkfuzz
 forkfuzz scan .            # → prioritized findings in seconds
 ```
 
+## Usage — step by step
+
+1. **Install** the CLI:
+
+   ```bash
+   pipx install "git+https://github.com/cognis-digital/forkfuzz.git"
+   ```
+
+2. **Check** a JSON contract spec for invariant violations (primary command):
+
+   ```bash
+   forkfuzz check spec.json
+   ```
+
+3. **Scale the search** — more random sequences, longer call sequences, and a fixed seed for reproducibility:
+
+   ```bash
+   forkfuzz check spec.json --runs 5000 --max-calls 50 --seed 42
+   ```
+
+4. **Read the output** — a table of violations, or JSON for triage and diffing:
+
+   ```bash
+   forkfuzz check spec.json --format json > violations.json
+   ```
+
+5. **Automate in CI** — fail the job (non-zero exit) when any invariant breaks, using a fixed seed so runs are deterministic:
+
+   ```bash
+   forkfuzz check spec.json --runs 2000 --seed 1 --format json
+   ```
+
 ## Contents
 
 - [Why forkfuzz?](#why) · [Features](#features) · [Quick start](#quick-start) · [Example](#example) · [Architecture](#architecture) · [AI stack](#ai-stack) · [How it compares](#how-it-compares) · [Integrations](#integrations) · [Install anywhere](#install-anywhere) · [Related](#related) · [Contributing](#contributing)
