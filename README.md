@@ -20,6 +20,12 @@ pip install "git+https://github.com/cognis-digital/forkfuzz.git"
 forkfuzz scan .            # → prioritized findings in seconds
 ```
 
+<!-- cognis:layman:start -->
+## What is this?
+
+ForkFuzz is a testing tool for smart contracts and protocol rules — it automatically tries thousands of random action sequences to find combinations that break your stated safety rules before you deploy. You describe your contract's state, functions, and the rules that must always hold (for example, "no account balance can go negative"), and ForkFuzz hunts for the shortest possible sequence of actions that violates one of those rules. It is aimed at developers and security researchers who want to catch logic bugs and edge cases early, without writing exhaustive manual test cases.
+<!-- cognis:layman:end -->
+
 ## Contents
 
 - [Why forkfuzz?](#why) · [Features](#features) · [Quick start](#quick-start) · [Example](#example) · [Architecture](#architecture) · [AI stack](#ai-stack) · [How it compares](#how-it-compares) · [Integrations](#integrations) · [Install anywhere](#install-anywhere) · [Related](#related) · [Contributing](#contributing)
@@ -47,6 +53,42 @@ One-command 'fuzz my contract against real mainnet liquidity' lowers the Echidna
 <div align="right"><a href="#top">↑ back to top</a></div>
 
 <a name="quick-start"></a>
+<!-- cognis:install:start -->
+## Install
+
+`forkfuzz` is source-available (not published to PyPI) — every method below installs
+straight from GitHub. Pick whichever you prefer; the one-line scripts auto-detect
+the best tool available on your machine.
+
+**One-liner (Linux / macOS):**
+```sh
+curl -fsSL https://raw.githubusercontent.com/cognis-digital/forkfuzz/HEAD/install.sh | sh
+```
+
+**One-liner (Windows PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/cognis-digital/forkfuzz/HEAD/install.ps1 | iex
+```
+
+**Or install manually — any one of:**
+```sh
+pipx install "git+https://github.com/cognis-digital/forkfuzz.git"     # isolated (recommended)
+uv tool install "git+https://github.com/cognis-digital/forkfuzz.git"  # uv
+pip install "git+https://github.com/cognis-digital/forkfuzz.git"      # pip
+```
+
+**From source:**
+```sh
+git clone https://github.com/cognis-digital/forkfuzz.git
+cd forkfuzz && pip install .
+```
+
+Then run:
+```sh
+forkfuzz --help
+```
+<!-- cognis:install:end -->
+
 ## Quick start
 
 ```bash

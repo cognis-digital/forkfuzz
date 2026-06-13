@@ -43,13 +43,6 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--version", action="version", version=f"{TOOL_NAME} {TOOL_VERSION}"
     )
-    parser.add_argument(
-        "--format",
-        choices=["table", "json"],
-        default="table",
-        help="output format (default: table)",
-    )
-
     sub = parser.add_subparsers(dest="command")
 
     check = sub.add_parser(
@@ -58,6 +51,12 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Fuzz a JSON contract spec and report counterexamples.",
     )
     check.add_argument("spec", help="path to a JSON contract spec")
+    check.add_argument(
+        "--format",
+        choices=["table", "json"],
+        default="table",
+        help="output format (default: table)",
+    )
     check.add_argument(
         "--runs", type=int, default=500, help="number of random sequences (default: 500)"
     )
