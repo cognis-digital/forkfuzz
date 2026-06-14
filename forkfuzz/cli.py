@@ -111,6 +111,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
 
     if args.command == "check":
+        if args.runs < 1:
+            print(f"error: --runs must be >= 1, got {args.runs}", file=sys.stderr)
+            return 2
+        if args.seq_len < 1:
+            print(
+                f"error: --seq-len must be >= 1, got {args.seq_len}", file=sys.stderr
+            )
+            return 2
+
         try:
             spec = load_spec(args.spec)
         except FileNotFoundError:

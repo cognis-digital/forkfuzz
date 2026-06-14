@@ -271,13 +271,44 @@ def parse_spec(data: Dict[str, Any]) -> Spec:
         for ra in rf.get("args", []) or []:
             if not isinstance(ra, dict) or "name" not in ra:
                 raise SpecError(f"bad arg in function {rf['name']!r}")
+            arg_name = str(ra["name"])
+            arg_type = str(ra.get("type", "int"))
+            if arg_type not in {"int", "float", "bool"}:
+                raise SpecError(
+                    f"arg {arg_name!r} in function {rf['name']!r} has unsupported "
+                    f"type {arg_type!r}; expected 'int', 'float', or 'bool'"
+                )
+            arg_min = ra.get("min")
+            arg_max = ra.get("max")
+            if arg_min is not None and not isinstance(arg_min, (int, float)):
+                raise SpecError(
+                    f"arg {arg_name!r} in function {rf['name']!r}: "
+                    f"'min' must be a number"
+                )
+            if arg_max is not None and not isinstance(arg_max, (int, float)):
+                raise SpecError(
+                    f"arg {arg_name!r} in function {rf['name']!r}: "
+                    f"'max' must be a number"
+                )
+            if arg_min is not None and arg_max is not None and arg_min > arg_max:
+                raise SpecError(
+                    f"arg {arg_name!r} in function {rf['name']!r}: "
+                    f"'min' ({arg_min}) must be <= 'max' ({arg_max})"
+                )
+            arg_choices = ra.get("choices")
+            if arg_choices is not None:
+                if not isinstance(arg_choices, list) or len(arg_choices) == 0:
+                    raise SpecError(
+                        f"arg {arg_name!r} in function {rf['name']!r}: "
+                        f"'choices' must be a non-empty list"
+                    )
             args.append(
                 Arg(
-                    name=str(ra["name"]),
-                    type=str(ra.get("type", "int")),
-                    min=ra.get("min"),
-                    max=ra.get("max"),
-                    choices=ra.get("choices"),
+                    name=arg_name,
+                    type=arg_type,
+                    min=arg_min,
+                    max=arg_max,
+                    choices=arg_choices,
                 )
             )
         effects = rf.get("effects", {}) or {}
@@ -371,9 +402,16 @@ def _apply_call(spec: Spec, func: Function, state: Dict[str, Any], call: Call) -
             call.reverted = True
             return False
     # Evaluate every effect against the *pre* state (simultaneous update).
+    # A ZeroDivisionError in an effect expression reverts the call rather than
+    # crashing the fuzzer — the guard is considered to have not protected against
+    # the unsafe input, so we treat it like a reverted call.
     new_values = {}
     for var, rhs in func.effects.items():
-        new_values[var] = safe_eval(rhs, env)
+        try:
+            new_values[var] = safe_eval(rhs, env)
+        except ZeroDivisionError:
+            call.reverted = True
+            return False
     state.update(new_values)
     return True
 
@@ -450,6 +488,11 @@ def fuzz(
     counterexample and recorded. With ``stop_on_first=False`` the engine
     keeps searching for violations of *other* invariants too.
     """
+    if runs < 1:
+        raise SpecError(f"'runs' must be >= 1, got {runs}")
+    if seq_len < 1:
+        raise SpecError(f"'seq_len' must be >= 1, got {seq_len}")
+
     rng = random.Random(seed)
     findings: List[Finding] = []
     seen_invariants = set()
