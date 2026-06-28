@@ -1,0 +1,3 @@
+$ forkfuzz-emit --version
+
+forkfuzz 0.1.0

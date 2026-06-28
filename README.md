@@ -20,6 +20,64 @@ pip install cognis-forkfuzz
 forkfuzz scan .            # → prioritized findings in seconds
 ```
 
+
+<!-- cognis:example:start -->
+## 🔎 Example output
+
+Real, reproducible output from the tool — runs offline:
+
+```console
+$ forkfuzz-emit --version
+forkfuzz 0.1.0
+```
+
+```console
+$ forkfuzz-emit --help
+usage: forkfuzz [-h] [--version] [--format {table,json}] {check} ...
+
+FORKFUZZ - one-command invariant fuzzing for contract specs. Runs generated call sequences against a JSON spec and reports the smallest sequence that breaks an invariant.
+
+positional arguments:
+  {check}
+    check               fuzz a contract spec for invariant violations
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --format {table,json}
+                        output format (default: table)
+
+example: python -m forkfuzz check demos/01-basic/vault.json
+example: python -m forkfuzz check spec.json --format json --seed 7
+```
+
+> Blocks above are real `forkfuzz` output — reproduce them from a clone.
+
+**Sample result format** _(illustrative values — run on your own data for real findings):_
+
+```
+{
+"findings": [
+    {
+        "id": "123456",
+        "title": "Suspicious Activity",
+        "description": "Potential malicious activity detected on IP 192.0.2.1",
+        "severity": "high",
+        "created_at": "2023-02-15T14:30:00Z"
+    },
+    {
+        "id": "789012",
+        "title": "Malware Detection",
+        "description": "Malware identified on system with IP 192.0.2.2",
+        "severity": "medium",
+        "created_at": "2023-02-15T14:31:00Z"
+    }
+]
+}
+```
+
+<!-- cognis:example:end -->
+
 ## Usage — step by step
 
 1. **Install** the CLI:

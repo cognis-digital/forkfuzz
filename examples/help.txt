@@ -1,0 +1,18 @@
+$ forkfuzz-emit --help
+
+usage: forkfuzz [-h] [--version] [--format {table,json}] {check} ...
+
+FORKFUZZ - one-command invariant fuzzing for contract specs. Runs generated call sequences against a JSON spec and reports the smallest sequence that breaks an invariant.
+
+positional arguments:
+  {check}
+    check               fuzz a contract spec for invariant violations
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --format {table,json}
+                        output format (default: table)
+
+example: python -m forkfuzz check demos/01-basic/vault.json
+example: python -m forkfuzz check spec.json --format json --seed 7
